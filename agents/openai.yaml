@@ -1,0 +1,4 @@
+interface:
+  display_name: "Canvas Course Sync"
+  short_description: "Sync Canvas courses safely into git"
+  default_prompt: "Use $canvas-course-sync to sync my Canvas courses from an API token and summarize new assignments, announcements, and files."
