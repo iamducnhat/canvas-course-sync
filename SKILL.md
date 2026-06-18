@@ -69,6 +69,13 @@ git -C canvas-sync commit -m "canvas sync YYYY-MM-DD HH:MM"
    - For announcements, answer the user's concrete question and link/quote only short necessary snippets.
    - For exam schedules/due dates, produce a concise calendar-style summary.
 
+6. **DeepSeek Orchestration (Optional)**
+   - By default, answer the user's questions yourself using your own reasoning.
+   - If the user explicitly asks to use DeepSeek (e.g. "bảo deepseek..."), act as the orchestrator.
+   - Gather the local assignment JSON/text from the sync folder.
+   - Run `python scripts/ask_deepseek.py --prompt "..." --context <path-to-json-or-markdown>` to send the data and the user's instruction to DeepSeek.
+   - Present DeepSeek's response back to the user.
+
 ## Script Notes
 
 The main script is:

@@ -11,6 +11,7 @@ This tool uses your Canvas API token to fetch course data (assignments, announce
 - **Change Detection:** Uses content hashing to determine exactly what is new or modified.
 - **Reporting:** Generates a human-readable Markdown report (`_changes/latest.md`) summarizing what changed.
 - **On-Demand Syncing:** Built to be run exactly when you need to know "what's new", fetching the latest state directly from Canvas.
+- **DeepSeek Integration (Optional):** Forward assignment details and prompts to DeepSeek for advanced AI reasoning, while Codex handles the API navigation.
 
 ## Prerequisites
 
@@ -98,6 +99,24 @@ my-canvas-data/
       modules/                 # Detailed module items
   index.json                   # Top-level index of synced courses
 ```
+
+### DeepSeek Integration (Optional)
+
+If you prefer to use DeepSeek for reasoning (e.g., outlining assignments), this skill can route prompts to it.
+
+1. Install the required unofficial library:
+   ```bash
+   pip install git+https://github.com/xtekky/deepseek4free.git
+   ```
+2. Get your DeepSeek `userToken`:
+   - Log into [chat.deepseek.com](https://chat.deepseek.com)
+   - Open Developer Tools -> Application -> Local Storage
+   - Copy the value of the `userToken` key.
+3. Export the token:
+   ```bash
+   export DEEPSEEK_AUTH_TOKEN="your_userToken_here"
+   ```
+4. Ask Codex to use DeepSeek! Example: *"Bảo deepseek lên cái sườn cho bài tập X hộ tôi"*. Codex will fetch the assignment details and forward them to DeepSeek via `scripts/ask_deepseek.py`.
 
 ## Security Best Practices
 
