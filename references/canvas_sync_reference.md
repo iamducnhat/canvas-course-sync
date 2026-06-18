@@ -16,6 +16,8 @@ The bundled sync script fetches:
 - announcements: `GET /api/v1/courses/:course_id/discussion_topics?only_announcements=true`
 - discussions: `GET /api/v1/courses/:course_id/discussion_topics`
 - files: `GET /api/v1/courses/:course_id/files`
+- groups: `GET /api/v1/users/self/groups`
+- group members: `GET /api/v1/groups/:group_id/users`
 
 Canvas pagination uses the HTTP `Link` header. Always follow `rel="next"` until exhausted.
 
@@ -28,6 +30,9 @@ canvas-sync/
     sync-YYYYMMDD-HHMMSS.md
   _state/
     snapshot_index.json
+  groups.json
+  groups/
+    <group-id>_users.json
   courses/
     <course-id>/
       course.json

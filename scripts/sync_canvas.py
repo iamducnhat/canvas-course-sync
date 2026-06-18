@@ -438,6 +438,30 @@ def fetch_course(client: CanvasClient, out: Path, state: dict[str, Any], changes
     }
 
 
+def fetch_groups(client: CanvasClient, out: Path) -> list[dict[str, Any]]:
+    groups_out = out / "groups"
+    groups_out.mkdir(parents=True, exist_ok=True)
+    groups = client.paged("/api/v1/users/self/groups")
+    write_json(out / "groups.json", groups)
+    
+    for group in groups:
+        group_id = group["id"]
+        try:
+            users = client.paged(f"/api/v1/groups/{group_id}/users")
+            write_json(groups_out / f"{group_id}_users.json", users)
+        except Exception as exc:
+            print(f"Warning: Could not fetch users for group {group_id}: {exc}", file=sys.stderr)
+            
+    return groups
+
+
+def reply_discussion(client: CanvasClient, course_id: int, topic_id: int, message: str) -> None:
+    print(f"Replying to discussion topic {topic_id} in course {course_id}...")
+    payload = {"message": message}
+    resp = client.post(f"/api/v1/courses/{course_id}/discussion_topics/{topic_id}/entries", payload)
+    print(f"Successfully posted reply. Entry ID: {resp.get('id')}")
+
+
 def write_report(out: Path, changes: list[dict[str, Any]], index: dict[str, Any], stamp: str) -> None:
     lines = [
         f"# Canvas Sync Report - {stamp}",
@@ -488,6 +512,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--submit", nargs=2, metavar=("COURSE_ID", "ASSIGNMENT_ID"), type=int, help="Submit an assignment.")
     parser.add_argument("--submit-text", help="Text to submit (requires --submit).")
     parser.add_argument("--submit-file", help="File path to upload and submit (requires --submit).")
+    parser.add_argument("--reply-discussion", nargs=3, metavar=("COURSE_ID", "TOPIC_ID", "MESSAGE"), help="Post a reply to a discussion topic.")
     return parser.parse_args()
 
 
@@ -505,6 +530,11 @@ def main() -> int:
     if args.submit:
         course_id, assignment_id = args.submit
         submit_assignment(client, course_id, assignment_id, args.submit_text, args.submit_file)
+        print("\nProceeding to sync to fetch the latest state...\n")
+
+    if args.reply_discussion:
+        course_id, topic_id, message = args.reply_discussion
+        reply_discussion(client, int(course_id), int(topic_id), message)
         print("\nProceeding to sync to fetch the latest state...\n")
 
     out = Path(args.out).expanduser().resolve()
@@ -538,6 +568,13 @@ def main() -> int:
     state["last_completed_at"] = now_utc()
     write_json(state_path, state)
     write_json(out / "index.json", index)
+    
+    # Fetch groups
+    try:
+        fetch_groups(client, out)
+    except Exception as exc:
+        print(f"Warning: Failed to fetch groups: {exc}", file=sys.stderr)
+
     stamp = dt.datetime.now().replace(microsecond=0).isoformat(timespec="seconds")
     write_report(out, changes, index, stamp)
 

@@ -1,6 +1,6 @@
 ---
 name: canvas-course-sync
-description: Sync Instructure Canvas courses using a user's Canvas API token. Use when the user asks Codex to fetch, sync, download, summarize, or diff Canvas courses, assignments, announcements, discussions, modules, files, due dates, course content, or LMS updates; when the user asks for the latest/newest items; when the user wants to check if an assignment is submitted, or wants to submit an assignment; when the user provides a Canvas API token; or when Codex needs a durable folder/git workflow for Canvas data without missing or duplicating new notices.
+description: Sync Instructure Canvas courses using a user's Canvas API token. Use when the user asks Codex to fetch, sync, download, summarize, or diff Canvas courses, assignments, announcements, discussions, groups, modules, files, due dates, course content, or LMS updates; when the user asks for the latest/newest items; when the user wants to check if an assignment is submitted, or wants to submit an assignment; when the user wants to post a discussion reply; when the user asks about their group members; when the user provides a Canvas API token; or when Codex needs a durable folder/git workflow for Canvas data without missing or duplicating new notices.
 ---
 
 # Canvas Course Sync
@@ -66,9 +66,11 @@ git -C canvas-sync commit -m "canvas sync YYYY-MM-DD HH:MM"
 
 5. **Act**
    - **Assignment State**: To check if an assignment is submitted, read the `submission` object inside the assignment's JSON file. It contains the current workflow state.
-   - **Linking**: When the user asks for "more detail" (nói chi tiết hơn) about an assignment, announcement, discussion, or any item, you MUST include a clickable Markdown link directly to its Canvas browser URL. You can find this URL in the `html_url` key inside the item's JSON.
+   - **Linking (CRITICAL RULE)**: When the user asks for "more detail" (nói chi tiết hơn) about an assignment, announcement, discussion, or any item, or whenever you perform an action that requires user attention, you MUST include a clickable Markdown link directly to its Canvas browser URL. You can find this URL in the `html_url` key inside the item's JSON. Do not omit this.
    - For assignments, fetch attached files, read instructions, and produce requested deliverables.
    - **Submitting**: To submit an assignment for the user, use the built-in submit flags. For text: `./sync_canvas --base-url <url> --out canvas-sync --submit <COURSE_ID> <ASSIGNMENT_ID> --submit-text "Your answer"`. For files: `./sync_canvas --base-url <url> --out canvas-sync --submit <COURSE_ID> <ASSIGNMENT_ID> --submit-file "path/to/file.pdf"`.
+   - **Discussion Replies**: To post a reply to a discussion, use `./sync_canvas --base-url <url> --out canvas-sync --reply-discussion <COURSE_ID> <TOPIC_ID> "Your message"`.
+   - **Groups**: To answer questions about groups or group members, read `canvas-sync/groups.json` for the group list, and `canvas-sync/groups/<group_id>_users.json` for member details.
    - For announcements and discussions, answer the user's concrete question and link/quote only short necessary snippets.
    - For exam schedules/due dates, produce a concise calendar-style summary.
 
