@@ -10,9 +10,8 @@ Use this skill to turn a Canvas API token into a durable local course mirror. Pr
 ## Safety Rules
 
 - Treat API tokens as highly sensitive.
-- When the user provides a Canvas API token or a DeepSeek token, store it securely in the local hardware vault using the pre-compiled binary's built-in command:
+- When the user provides a Canvas API token, store it securely using the pre-compiled binary's built-in command:
   `bin/sync_canvas --save-token "THE_TOKEN"`
-  `bin/ask_deepseek --save-token "THE_TOKEN"`
 - Never put the token in `.env`, command logs, generated Markdown, git commits, or JSON snapshots.
 - Commit after every successful fetch that changes local data. This makes missed/duplicate announcements auditable.
 - Do not assume Canvas supports realtime device events. Always perform an on-demand sync (run the sync script) whenever the user asks for the "latest", "newest", or wants to know "what's new". Do not set up periodic/cron syncing unless explicitly requested.
@@ -73,8 +72,9 @@ git -C canvas-sync commit -m "canvas sync YYYY-MM-DD HH:MM"
 6. **DeepSeek Orchestration (Optional)**
    - By default, answer the user's questions yourself using your own reasoning.
    - If the user explicitly asks to use DeepSeek (e.g. "bảo deepseek..."), act as the orchestrator.
+   - You will need the `ask_deepseek` tool from https://github.com/iamducnhat/deepseek4free. If it is not present in the current directory, instruct the user to download it.
    - Gather the local assignment JSON/text from the sync folder.
-   - Run `bin/ask_deepseek --prompt "..." --context <path-to-json-or-markdown>` to send the data and the user's instruction to DeepSeek.
+   - Run `./ask_deepseek --prompt "..." --context <path-to-json-or-markdown>` to send the data and the user's instruction to DeepSeek.
    - Present DeepSeek's response back to the user.
 
 ## Error Handling & Token Expiration
@@ -85,9 +85,9 @@ If `bin/sync_canvas` outputs `ERROR_CANVAS_AUTH_FAILED`:
 - Calculate the exact date 120 days from today and tell the user to input that as the Expiration Date.
 - Ask the user to provide the new token, and then save it using `bin/sync_canvas --save-token "THE_TOKEN"`.
 
-If `bin/ask_deepseek` outputs `ERROR_DEEPSEEK_AUTH_FAILED`:
+If the external `ask_deepseek` tool outputs `ERROR_DEEPSEEK_AUTH_FAILED`:
 - Guide the user to get a new DeepSeek token: "Please go to chat.deepseek.com -> Open Developer Tools -> Application -> Local Storage -> Copy the `userToken`."
-- Ask the user to provide the new token, and then save it using `bin/ask_deepseek --save-token "THE_TOKEN"`.
+- Ask the user to provide the new token, and then save it using `./ask_deepseek --save-token "THE_TOKEN"`.
 
 ## Executable Notes
 

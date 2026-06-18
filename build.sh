@@ -18,11 +18,9 @@ pip install pyinstaller curl-cffi==0.8.1b9 wasmtime numpy nodriver drissionpage 
 
 echo "[3/4] Compiling binaries..."
 cd scripts
-pyinstaller --onefile --collect-all wasmtime --collect-all curl_cffi --add-data "dsk:dsk" ask_deepseek.py
 pyinstaller --onefile sync_canvas.py
 
 echo "[4/4] Moving binaries to bin/ directory..."
-cp dist/ask_deepseek ../bin/
 cp dist/sync_canvas ../bin/
 
 echo "Cleaning up..."
