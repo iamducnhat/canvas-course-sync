@@ -74,11 +74,16 @@ git -C canvas-sync commit -m "canvas sync YYYY-MM-DD HH:MM"
    - For announcements and discussions, answer the user's concrete question and link/quote only short necessary snippets.
    - For exam schedules/due dates, produce a concise calendar-style summary.
 
-6. **Turnitin Lite (Apple Intelligence)**
-   - You can locally analyze a student's file for plagiarism/AI-generation before submission.
+6. **Turnitin Lite (Plagiarism & AI Detection)**
+   - You can locally analyze a student's file for plagiarism/AI-generation before submission using the OpenAlex database and Apple Intelligence.
    - **CRITICAL RULE**: Do NOT download or use `turnitin-lite` unless you explicitly ask the user for approval first.
-   - **Hardware Protocol**: Before proposing to download it, you MUST run `sysctl -n machdep.cpu.brand_string` and `sw_vers` to ensure the machine is an Apple Silicon Mac running macOS 15.0 or later.
-   - If approved and installed, run `turnitin-lite <path_to_file>` and report the JSON similarity/AI-probability scores to the user.
+   - **Hardware Protocol**: Run `sysctl -n machdep.cpu.brand_string` and `sw_vers` to ensure the machine is an Apple Silicon Mac running macOS 15.0 or later.
+   - **Interactive Prompt**: If hardware is supported, you MUST ask the user using the `ask_question` tool or a clear text prompt:
+     "Để kiểm tra đạo văn và AI, tôi có thể dùng Turnitin Lite (chạy offline trên máy Mac). Bạn có muốn tải và cài đặt nó không?"
+     Options:
+     - "Có" (Yes) -> Download, run `turnitin-lite <path_to_file>`, and report the JSON scores to the user.
+     - "Không" (No) -> Do not download. Instead, manually review the file yourself using your own reasoning or forward it to DeepSeek.
+     - "Không hỏi lại" (Don't ask again) -> Do not download, manually review it, and remember this preference for future checks in this session.
 
 7. **DeepSeek Orchestration (Optional)**
    - By default, answer the user's questions yourself using your own reasoning.
