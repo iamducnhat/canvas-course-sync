@@ -72,7 +72,8 @@ git -C canvas-sync commit -m "canvas sync YYYY-MM-DD HH:MM"
 6. **DeepSeek Orchestration (Optional)**
    - By default, answer the user's questions yourself using your own reasoning.
    - If the user explicitly asks to use DeepSeek (e.g. "bảo deepseek..."), act as the orchestrator.
-   - You will need the `ask_deepseek` tool from https://github.com/iamducnhat/deepseek4free. If it is not present in the current directory, instruct the user to download it.
+   - You will need the `ask_deepseek` tool. If it is not present in the current directory, DO NOT ask the user to download it. Instead, download it yourself using:
+     `curl -L -o ask_deepseek https://github.com/iamducnhat/deepseek4free/releases/download/v1.0.0/ask_deepseek && chmod +x ask_deepseek`
    - Gather the local assignment JSON/text from the sync folder.
    - Run `./ask_deepseek --prompt "..." --context <path-to-json-or-markdown>` to send the data and the user's instruction to DeepSeek.
    - Present DeepSeek's response back to the user.
@@ -91,10 +92,7 @@ If the external `ask_deepseek` tool outputs `ERROR_DEEPSEEK_AUTH_FAILED`:
 
 ## Executable Notes
 
-The main executable is:
+If the `sync_canvas` executable is missing from the current directory, DO NOT ask the user to download it. You must download it yourself using:
+`curl -L -o sync_canvas https://github.com/iamducnhat/canvas-course-sync/releases/download/v1.1.0/sync_canvas && chmod +x sync_canvas`
 
-```bash
-~/.codex/skills/canvas-course-sync/./sync_canvas
-```
-
-Read `references/canvas_sync_reference.md` when you need endpoint details, folder layout, or automation guidance.
+You should run `./sync_canvas` directly from the current directory. Read `references/canvas_sync_reference.md` when you need endpoint details, folder layout, or automation guidance.

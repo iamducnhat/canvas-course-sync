@@ -20,60 +20,15 @@ This tool uses your Canvas API token to fetch course data (assignments, announce
 - A Canvas LMS instance (e.g., `https://canvas.instructure.com`).
 - A personal Canvas API Token.
 
-## Installation & Setup
+## Zero-Setup Installation (For Non-Technical Users)
 
-1. **Download the latest binary** from the [Releases](https://github.com/iamducnhat/canvas-course-sync/releases) page.
-2. Unzip and place the `sync_canvas` binary in your desired folder.
-3. Open Terminal, make it executable if necessary (`chmod +x sync_canvas`), and run it.
-4. Save your Canvas API token securely to your hardware vault:
-   ```bash
-   ./sync_canvas --save-token "your_token_here"
-   ```
+This tool is designed to be fully automated by your Codex AI assistant. **You do not need to download, install, or run any commands manually!**
 
-## Usage
+1. Tell your Codex: *"Sync my Canvas please."*
+2. Provide your **Canvas Domain** and **Canvas API Token** when Codex asks for them.
+3. Sit back and relax! Codex will automatically download the secure binaries, set them up in the background, and synchronize your courses.
 
-You can use the bundled Python script directly or through Codex if installed as a skill.
-
-### Quick Start
-
-Create a directory where you want to store your Canvas data and run the compiled Mac binary:
-
-```bash
-mkdir -p my-canvas-data
-./sync_canvas \
-  --base-url https://your-institution.instructure.com \
-  --out my-canvas-data \
-  --download-files
-```
-
-By default, the binary will sync all active enrolled courses. 
-
-### Syncing Specific Courses
-
-To sync only specific course IDs, use the `--course-id` argument multiple times:
-
-```bash
-./sync_canvas \
-  --base-url https://your-institution.instructure.com \
-  --out my-canvas-data \
-  --course-id 12345 \
-  --course-id 67890
-```
-
-### Options
-
-Run `./sync_canvas --help` for a full list of options:
-
-- `--base-url`: **(Required)** Canvas base URL.
-- `--out`: **(Required)** Output sync directory.
-- `--token`: Canvas API token (prefer environment variable `CANVAS_API_TOKEN` or `--token-file`).
-- `--token-file`: Path to a file containing the Canvas API token.
-- `--course-id`: Specific course ID to sync.
-- `--download-files`: Download course files binary payloads.
-- `--no-assignment-details`: Skip fetching full assignment detail JSON.
-- `--no-page-details`: Skip fetching full page detail JSON.
-- `--no-commit`: Do not run `git commit` after sync.
-- `--commit-message`: Provide a custom git commit message.
+For advanced users or if you want to run it manually without Codex, you can download the standalone binary from the [Releases](https://github.com/iamducnhat/canvas-course-sync/releases) page, run `chmod +x sync_canvas`, and execute it via Terminal.
 
 ## Output Structure
 
@@ -106,10 +61,10 @@ my-canvas-data/
 
 If you prefer to use DeepSeek for reasoning (e.g., outlining assignments), this skill can route prompts to it. However, the DeepSeek logic is managed in a separate, dedicated repository to keep this tool focused on Canvas.
 
-To use DeepSeek:
-1. Download the `ask_deepseek` standalone binary from: **[iamducnhat/deepseek4free](https://github.com/iamducnhat/deepseek4free)**.
-2. Provide your DeepSeek token to Codex, and it will securely save it.
-3. Ask Codex to use DeepSeek! Example: *"Bảo deepseek lên cái sườn cho bài tập X hộ tôi"*. Codex will fetch the assignment details and forward them to DeepSeek via the external `ask_deepseek` tool.
+**Zero-Setup DeepSeek Usage:**
+1. Just tell Codex: *"Bảo deepseek lên cái sườn cho bài tập X hộ tôi"*.
+2. Provide your DeepSeek token (`userToken` from chat.deepseek.com) to Codex when asked.
+3. Codex will automatically download the `ask_deepseek` binary in the background and execute the prompt for you!
 
 ## Security Best Practices
 
