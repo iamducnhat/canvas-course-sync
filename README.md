@@ -60,10 +60,10 @@ my-canvas-data/
   index.json                   # Top-level index of synced courses
 ```
 
-### Turnitin Lite (Optional Apple Intelligence Detection)
+### Turnitin Lite (Optional Plagiarism Detection)
 
 If you are using an Apple Silicon Mac running macOS 15.0 or later, Codex can use **Turnitin Lite** to evaluate your documents for plagiarism and AI-generation before you submit them to Canvas. 
-This tool runs 100% offline using native Apple Intelligence (FoundationModels).
+This tool queries the **OpenAlex Database** for real academic plagiarism checks and uses native Apple Intelligence (FoundationModels) to estimate AI probability.
 
 **Zero-Setup Turnitin Lite Usage:**
 1. Tell Codex: *"Kiểm tra file này giúp tôi trước khi nộp."*
