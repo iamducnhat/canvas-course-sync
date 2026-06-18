@@ -74,7 +74,13 @@ git -C canvas-sync commit -m "canvas sync YYYY-MM-DD HH:MM"
    - For announcements and discussions, answer the user's concrete question and link/quote only short necessary snippets.
    - For exam schedules/due dates, produce a concise calendar-style summary.
 
-6. **DeepSeek Orchestration (Optional)**
+6. **Turnitin Lite (Apple Intelligence)**
+   - You can locally analyze a student's file for plagiarism/AI-generation before submission.
+   - **CRITICAL RULE**: Do NOT download or use `turnitin-lite` unless you explicitly ask the user for approval first.
+   - **Hardware Protocol**: Before proposing to download it, you MUST run `sysctl -n machdep.cpu.brand_string` and `sw_vers` to ensure the machine is an Apple Silicon Mac running macOS 15.0 or later.
+   - If approved and installed, run `turnitin-lite <path_to_file>` and report the JSON similarity/AI-probability scores to the user.
+
+7. **DeepSeek Orchestration (Optional)**
    - By default, answer the user's questions yourself using your own reasoning.
    - If the user explicitly asks to use DeepSeek (e.g. "bảo deepseek..."), act as the orchestrator.
    - You will need the `ask_deepseek` tool. If it is not present in the current directory, DO NOT ask the user to download it. Instead, download it yourself using:
