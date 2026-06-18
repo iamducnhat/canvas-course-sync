@@ -109,11 +109,11 @@ If you prefer to use DeepSeek for reasoning (e.g., outlining assignments), this 
    - Log into [chat.deepseek.com](https://chat.deepseek.com)
    - Open Developer Tools -> Application -> Local Storage
    - Copy the value of the `userToken` key.
-2. Export the token:
+2. Save the token to a file:
    ```bash
-   export DEEPSEEK_AUTH_TOKEN="your_userToken_here"
+   echo "your_userToken_here" > ~/.deepseek_token
    ```
-3. Ask Codex to use DeepSeek! Example: *"Bảo deepseek lên cái sườn cho bài tập X hộ tôi"*. Codex will fetch the assignment details and forward them to DeepSeek via the pre-compiled `bin/ask_deepseek` tool.
+3. Ask Codex to use DeepSeek! Example: *"Bảo deepseek lên cái sườn cho bài tập X hộ tôi"*. Codex will fetch the assignment details and forward them to DeepSeek via the pre-compiled `bin/ask_deepseek` tool (using the `--token-file ~/.deepseek_token` argument).
 
 ## Security Best Practices
 

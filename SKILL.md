@@ -72,8 +72,9 @@ git -C canvas-sync commit -m "canvas sync YYYY-MM-DD HH:MM"
 6. **DeepSeek Orchestration (Optional)**
    - By default, answer the user's questions yourself using your own reasoning.
    - If the user explicitly asks to use DeepSeek (e.g. "bảo deepseek..."), act as the orchestrator.
+   - Tell the user to save their token in `~/.deepseek_token` if they haven't.
    - Gather the local assignment JSON/text from the sync folder.
-   - Run `bin/ask_deepseek --prompt "..." --context <path-to-json-or-markdown>` to send the data and the user's instruction to DeepSeek.
+   - Run `bin/ask_deepseek --token-file ~/.deepseek_token --prompt "..." --context <path-to-json-or-markdown>` to send the data and the user's instruction to DeepSeek.
    - Present DeepSeek's response back to the user.
 
 ## Executable Notes

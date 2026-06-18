@@ -9,14 +9,22 @@ from dsk.api import DeepSeekAPI, AuthenticationError, APIError
 def main():
     parser = argparse.ArgumentParser(description="Ask DeepSeek using deepseek4free.")
     parser.add_argument("--token", help="DeepSeek auth token. Defaults to DEEPSEEK_AUTH_TOKEN env var.")
+    parser.add_argument("--token-file", help="Path to a file containing the DeepSeek auth token.")
     parser.add_argument("--prompt", required=True, help="The prompt to send to DeepSeek.")
     parser.add_argument("--context", action="append", default=[], help="Path to a file (e.g. assignment JSON) to include in the context. Can be used multiple times.")
     parser.add_argument("--chat-id", help="Optional Chat ID to continue an existing conversation.")
     args = parser.parse_args()
 
     token = args.token or os.environ.get("DEEPSEEK_AUTH_TOKEN")
+    if not token and args.token_file:
+        try:
+            token = Path(args.token_file).expanduser().read_text(encoding="utf-8").strip()
+        except Exception as e:
+            print(f"Error reading token file: {e}")
+            sys.exit(1)
+            
     if not token:
-        print("Error: DeepSeek auth token is required. Pass --token or set DEEPSEEK_AUTH_TOKEN.")
+        print("Error: DeepSeek auth token is required. Pass --token, --token-file, or set DEEPSEEK_AUTH_TOKEN.")
         sys.exit(1)
 
     # Build the full prompt
