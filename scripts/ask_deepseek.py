@@ -5,15 +5,26 @@ import sys
 from pathlib import Path
 
 from dsk.api import DeepSeekAPI, AuthenticationError, APIError
+import auth_vault
 
 def main():
     parser = argparse.ArgumentParser(description="Ask DeepSeek using deepseek4free.")
     parser.add_argument("--token", help="DeepSeek auth token. Defaults to DEEPSEEK_AUTH_TOKEN env var.")
     parser.add_argument("--token-file", help="Path to a file containing the DeepSeek auth token.")
-    parser.add_argument("--prompt", required=True, help="The prompt to send to DeepSeek.")
+    parser.add_argument("--save-token", help="Securely save the DeepSeek API token to local hardware vault and exit.")
+    parser.add_argument("--prompt", required=False, help="The prompt to send to DeepSeek.")
     parser.add_argument("--context", action="append", default=[], help="Path to a file (e.g. assignment JSON) to include in the context. Can be used multiple times.")
     parser.add_argument("--chat-id", help="Optional Chat ID to continue an existing conversation.")
     args = parser.parse_args()
+
+    if args.save_token:
+        auth_vault.save_token("deepseek_api_token", args.save_token)
+        print("DeepSeek API token securely saved to hardware vault (~/.canvas_sync_vault/).")
+        sys.exit(0)
+        
+    if not args.prompt:
+        print("Error: the following arguments are required: --prompt")
+        sys.exit(1)
 
     token = args.token or os.environ.get("DEEPSEEK_AUTH_TOKEN")
     if not token and args.token_file:
@@ -29,9 +40,14 @@ def main():
             token = result.stdout.strip()
         except Exception:
             pass
+            
+    if not token:
+        vault_token = auth_vault.load_token("deepseek_api_token")
+        if vault_token:
+            token = vault_token.strip()
 
     if not token:
-        print("Error: DeepSeek auth token is required. Pass --token, --token-file, use DEEPSEEK_AUTH_TOKEN, or store in macOS Keychain (deepseek_api_token).")
+        print("Error: DeepSeek auth token is required. Pass --token, --token-file, use DEEPSEEK_AUTH_TOKEN, or store in hardware vault (--save-token).")
         sys.exit(1)
 
     # Build the full prompt

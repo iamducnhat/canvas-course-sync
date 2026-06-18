@@ -109,7 +109,7 @@ If you prefer to use DeepSeek for reasoning (e.g., outlining assignments), this 
    - Log into [chat.deepseek.com](https://chat.deepseek.com)
    - Open Developer Tools -> Application -> Local Storage
    - Copy the value of the `userToken` key.
-2. Provide the token to Codex (it will securely save it in your macOS Keychain).
+2. Provide the token to Codex (it will securely save it in your hardware-bound local vault).
 3. Ask Codex to use DeepSeek! Example: *"Bảo deepseek lên cái sườn cho bài tập X hộ tôi"*. Codex will fetch the assignment details and forward them to DeepSeek via the pre-compiled `bin/ask_deepseek` tool.
 
 ## Security Best Practices

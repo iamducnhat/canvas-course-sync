@@ -15,6 +15,7 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 from typing import Any
+import auth_vault
 
 
 Json = dict[str, Any] | list[Any]
@@ -234,7 +235,12 @@ def get_token(args: argparse.Namespace) -> str:
         return result.stdout.strip()
     except Exception:
         pass
-    raise SystemExit("Missing token. Use --token, --token-file, CANVAS_API_TOKEN, or store in macOS Keychain (canvas_api_token).")
+        
+    vault_token = auth_vault.load_token("canvas_api_token")
+    if vault_token:
+        return vault_token.strip()
+        
+    raise SystemExit("Missing token. Use --token, --token-file, CANVAS_API_TOKEN, or store in hardware vault (--save-token).")
 
 
 def fetch_course(client: CanvasClient, out: Path, state: dict[str, Any], changes: list[dict[str, Any]], course: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
@@ -378,6 +384,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--download-files", action="store_true", help="Download course files listed by Canvas.")
     parser.add_argument("--assignment-details", action=argparse.BooleanOptionalAction, default=True, help="Fetch full assignment detail JSON.")
     parser.add_argument("--page-details", action=argparse.BooleanOptionalAction, default=True, help="Fetch full page detail JSON.")
+    parser.add_argument("--save-token", help="Securely save the Canvas API token to local hardware vault and exit.")
     parser.add_argument("--no-commit", action="store_true", help="Do not git commit after sync.")
     parser.add_argument("--commit-message", help="Custom git commit message.")
     return parser.parse_args()
@@ -385,6 +392,12 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+    
+    if args.save_token:
+        auth_vault.save_token("canvas_api_token", args.save_token)
+        print("Canvas API token securely saved to hardware vault (~/.canvas_sync_vault/).")
+        return 0
+        
     token = get_token(args)
     out = Path(args.out).expanduser().resolve()
     out.mkdir(parents=True, exist_ok=True)
