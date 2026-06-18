@@ -23,10 +23,10 @@ Use this skill to turn a Canvas API token into a durable local course mirror. Pr
 mkdir -p canvas-sync
 ```
 
-2. Run the bundled sync script:
+2. Run the bundled Mac executable:
 
 ```bash
-python ~/.codex/skills/canvas-course-sync/scripts/sync_canvas.py \
+~/.codex/skills/canvas-course-sync/bin/sync_canvas \
   --base-url https://vinuni.instructure.com \
   --token "$CANVAS_API_TOKEN" \
   --out canvas-sync \
@@ -45,7 +45,7 @@ Use `--course-id 2607 --course-id 3128` to sync only specific courses. Omit cour
    - If the user asks for the "latest" updates or "what's new", immediately run the sync command to fetch the newest state. There is no need to set up periodic or continuous syncing.
 
 2. **Sync**
-   - Use `scripts/sync_canvas.py`.
+   - Use `bin/sync_canvas`.
    - Keep raw API JSON in `courses/<course-id>/`.
    - Download course files only when useful; they can be large.
    - The script writes a normalized index and a Markdown change report.
@@ -73,15 +73,15 @@ git -C canvas-sync commit -m "canvas sync YYYY-MM-DD HH:MM"
    - By default, answer the user's questions yourself using your own reasoning.
    - If the user explicitly asks to use DeepSeek (e.g. "bảo deepseek..."), act as the orchestrator.
    - Gather the local assignment JSON/text from the sync folder.
-   - Run `python scripts/ask_deepseek.py --prompt "..." --context <path-to-json-or-markdown>` to send the data and the user's instruction to DeepSeek.
+   - Run `bin/ask_deepseek --prompt "..." --context <path-to-json-or-markdown>` to send the data and the user's instruction to DeepSeek.
    - Present DeepSeek's response back to the user.
 
-## Script Notes
+## Executable Notes
 
-The main script is:
+The main executable is:
 
 ```bash
-~/.codex/skills/canvas-course-sync/scripts/sync_canvas.py
+~/.codex/skills/canvas-course-sync/bin/sync_canvas
 ```
 
 Read `references/canvas_sync_reference.md` when you need endpoint details, folder layout, or automation guidance.

@@ -4,13 +4,7 @@ import os
 import sys
 from pathlib import Path
 
-try:
-    from dsk.api import DeepSeekAPI, AuthenticationError, APIError
-except ImportError:
-    print("Error: The 'deepseek4free' library is not installed.")
-    print("Please install it first by running:")
-    print("  pip install git+https://github.com/xtekky/deepseek4free.git")
-    sys.exit(1)
+from dsk.api import DeepSeekAPI, AuthenticationError, APIError
 
 def main():
     parser = argparse.ArgumentParser(description="Ask DeepSeek using deepseek4free.")

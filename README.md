@@ -1,6 +1,7 @@
 # Canvas Course Sync
+![macOS](https://img.shields.io/badge/macOS-000000?style=for-the-badge&logo=apple&logoColor=white)
 
-A lightweight, local-first tool and Codex skill for syncing Instructure Canvas courses into a durable, git-backed directory.
+A lightweight, zero-setup macOS Codex skill for syncing Instructure Canvas courses into a durable, git-backed directory.
 
 This tool uses your Canvas API token to fetch course data (assignments, announcements, pages, quizzes, modules, and files) and normalizes it into JSON files. It generates a Markdown report of changes after each sync and optionally commits the state to a local git repository. This provides a clean, auditable history of your course updates without missing or duplicating notices.
 
@@ -15,7 +16,7 @@ This tool uses your Canvas API token to fetch course data (assignments, announce
 
 ## Prerequisites
 
-- Python 3.9 or newer.
+- macOS (Intel or Apple Silicon).
 - A Canvas LMS instance (e.g., `https://canvas.instructure.com`).
 - A personal Canvas API Token.
 
@@ -34,24 +35,24 @@ You can use the bundled Python script directly or through Codex if installed as 
 
 ### Quick Start
 
-Create a directory where you want to store your Canvas data and run the sync script:
+Create a directory where you want to store your Canvas data and run the compiled Mac binary:
 
 ```bash
 mkdir -p my-canvas-data
-python scripts/sync_canvas.py \
+bin/sync_canvas \
   --base-url https://your-institution.instructure.com \
   --out my-canvas-data \
   --download-files
 ```
 
-By default, the script will sync all active enrolled courses. 
+By default, the binary will sync all active enrolled courses. 
 
 ### Syncing Specific Courses
 
 To sync only specific course IDs, use the `--course-id` argument multiple times:
 
 ```bash
-python scripts/sync_canvas.py \
+bin/sync_canvas \
   --base-url https://your-institution.instructure.com \
   --out my-canvas-data \
   --course-id 12345 \
@@ -60,7 +61,7 @@ python scripts/sync_canvas.py \
 
 ### Options
 
-Run `python scripts/sync_canvas.py --help` for a full list of options:
+Run `bin/sync_canvas --help` for a full list of options:
 
 - `--base-url`: **(Required)** Canvas base URL.
 - `--out`: **(Required)** Output sync directory.
@@ -102,21 +103,17 @@ my-canvas-data/
 
 ### DeepSeek Integration (Optional)
 
-If you prefer to use DeepSeek for reasoning (e.g., outlining assignments), this skill can route prompts to it.
+If you prefer to use DeepSeek for reasoning (e.g., outlining assignments), this skill can route prompts to it. Everything is pre-compiled into a zero-setup macOS binary.
 
-1. Install the required unofficial library:
-   ```bash
-   pip install git+https://github.com/xtekky/deepseek4free.git
-   ```
-2. Get your DeepSeek `userToken`:
+1. Get your DeepSeek `userToken`:
    - Log into [chat.deepseek.com](https://chat.deepseek.com)
    - Open Developer Tools -> Application -> Local Storage
    - Copy the value of the `userToken` key.
-3. Export the token:
+2. Export the token:
    ```bash
    export DEEPSEEK_AUTH_TOKEN="your_userToken_here"
    ```
-4. Ask Codex to use DeepSeek! Example: *"Bảo deepseek lên cái sườn cho bài tập X hộ tôi"*. Codex will fetch the assignment details and forward them to DeepSeek via `scripts/ask_deepseek.py`.
+3. Ask Codex to use DeepSeek! Example: *"Bảo deepseek lên cái sườn cho bài tập X hộ tôi"*. Codex will fetch the assignment details and forward them to DeepSeek via the pre-compiled `bin/ask_deepseek` tool.
 
 ## Security Best Practices
 
