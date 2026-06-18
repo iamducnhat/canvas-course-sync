@@ -9,8 +9,10 @@ Use this skill to turn a Canvas API token into a durable local course mirror. Pr
 
 ## Safety Rules
 
-- Treat Canvas API tokens as secrets. Do not print, quote, commit, or include them in final answers.
-- If the user pastes a token, use it only for the current sync or store it outside the sync repo with `chmod 600` when persistence is useful.
+- Treat API tokens as highly sensitive.
+- When the user provides a Canvas API token or a DeepSeek token, store it securely in macOS Keychain:
+  `security add-generic-password -a "$USER" -s "canvas_api_token" -w "THE_TOKEN" -U`
+  `security add-generic-password -a "$USER" -s "deepseek_api_token" -w "THE_TOKEN" -U`
 - Never put the token in `.env`, command logs, generated Markdown, git commits, or JSON snapshots.
 - Commit after every successful fetch that changes local data. This makes missed/duplicate announcements auditable.
 - Do not assume Canvas supports realtime device events. Always perform an on-demand sync (run the sync script) whenever the user asks for the "latest", "newest", or wants to know "what's new". Do not set up periodic/cron syncing unless explicitly requested.
@@ -28,7 +30,6 @@ mkdir -p canvas-sync
 ```bash
 ~/.codex/skills/canvas-course-sync/bin/sync_canvas \
   --base-url https://vinuni.instructure.com \
-  --token "$CANVAS_API_TOKEN" \
   --out canvas-sync \
   --download-files
 ```
@@ -72,10 +73,21 @@ git -C canvas-sync commit -m "canvas sync YYYY-MM-DD HH:MM"
 6. **DeepSeek Orchestration (Optional)**
    - By default, answer the user's questions yourself using your own reasoning.
    - If the user explicitly asks to use DeepSeek (e.g. "bảo deepseek..."), act as the orchestrator.
-   - Tell the user to save their token in `~/.deepseek_token` if they haven't.
    - Gather the local assignment JSON/text from the sync folder.
-   - Run `bin/ask_deepseek --token-file ~/.deepseek_token --prompt "..." --context <path-to-json-or-markdown>` to send the data and the user's instruction to DeepSeek.
+   - Run `bin/ask_deepseek --prompt "..." --context <path-to-json-or-markdown>` to send the data and the user's instruction to DeepSeek.
    - Present DeepSeek's response back to the user.
+
+## Error Handling & Token Expiration
+
+If `bin/sync_canvas` outputs `ERROR_CANVAS_AUTH_FAILED`:
+- It means the Canvas token is expired or invalid.
+- Guide the user to create a new token: "Please go to Canvas -> Account -> Settings -> scroll down and click 'New Access Token'."
+- Calculate the exact date 120 days from today and tell the user to input that as the Expiration Date.
+- Ask the user to provide the new token, and then save it using `security add-generic-password`.
+
+If `bin/ask_deepseek` outputs `ERROR_DEEPSEEK_AUTH_FAILED`:
+- Guide the user to get a new DeepSeek token: "Please go to chat.deepseek.com -> Open Developer Tools -> Application -> Local Storage -> Copy the `userToken`."
+- Ask the user to provide the new token, and then save it using `security add-generic-password`.
 
 ## Executable Notes
 

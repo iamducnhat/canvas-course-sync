@@ -19,12 +19,19 @@ def main():
     if not token and args.token_file:
         try:
             token = Path(args.token_file).expanduser().read_text(encoding="utf-8").strip()
-        except Exception as e:
-            print(f"Error reading token file: {e}")
-            sys.exit(1)
+        except Exception:
+            pass
             
     if not token:
-        print("Error: DeepSeek auth token is required. Pass --token, --token-file, or set DEEPSEEK_AUTH_TOKEN.")
+        try:
+            import subprocess
+            result = subprocess.run(['security', 'find-generic-password', '-a', os.environ.get('USER', ''), '-s', 'deepseek_api_token', '-w'], capture_output=True, text=True, check=True)
+            token = result.stdout.strip()
+        except Exception:
+            pass
+
+    if not token:
+        print("Error: DeepSeek auth token is required. Pass --token, --token-file, use DEEPSEEK_AUTH_TOKEN, or store in macOS Keychain (deepseek_api_token).")
         sys.exit(1)
 
     # Build the full prompt
@@ -60,13 +67,13 @@ def main():
                 print(chunk['content'], end='', flush=True)
         print("\n" + "-"*40)
     except AuthenticationError:
-        print("\nAuthentication failed. Please check your DEEPSEEK_AUTH_TOKEN.")
+        print("\nERROR_DEEPSEEK_AUTH_FAILED: Authentication failed. Token may be invalid or expired.", file=sys.stderr)
         sys.exit(1)
     except APIError as e:
-        print(f"\nAPI error occurred: {e}")
+        print(f"\nAPI error occurred: {e}", file=sys.stderr)
         sys.exit(1)
     except Exception as e:
-        print(f"\nAn unexpected error occurred: {e}")
+        print(f"\nAn unexpected error occurred: {e}", file=sys.stderr)
         sys.exit(1)
 
 if __name__ == "__main__":

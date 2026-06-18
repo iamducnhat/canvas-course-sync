@@ -83,6 +83,9 @@ class CanvasClient:
                     text = raw.decode("utf-8") if raw else "null"
                     return json.loads(text), {k.lower(): v for k, v in resp.headers.items()}
             except urllib.error.HTTPError as exc:
+                if exc.code == 401:
+                    print(f"\nERROR_CANVAS_AUTH_FAILED: Canvas API token is invalid or expired. HTTP 401.", file=sys.stderr)
+                    sys.exit(1)
                 if exc.code in {429, 500, 502, 503, 504} and attempt < 3:
                     time.sleep(2**attempt)
                     continue
@@ -225,7 +228,13 @@ def get_token(args: argparse.Namespace) -> str:
     env = os.environ.get("CANVAS_API_TOKEN")
     if env:
         return env.strip()
-    raise SystemExit("Missing token. Use --token, --token-file, or CANVAS_API_TOKEN.")
+    try:
+        import subprocess
+        result = subprocess.run(['security', 'find-generic-password', '-a', os.environ.get('USER', ''), '-s', 'canvas_api_token', '-w'], capture_output=True, text=True, check=True)
+        return result.stdout.strip()
+    except Exception:
+        pass
+    raise SystemExit("Missing token. Use --token, --token-file, CANVAS_API_TOKEN, or store in macOS Keychain (canvas_api_token).")
 
 
 def fetch_course(client: CanvasClient, out: Path, state: dict[str, Any], changes: list[dict[str, Any]], course: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
