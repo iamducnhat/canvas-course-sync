@@ -12,6 +12,7 @@ This tool uses your Canvas API token to fetch course data (assignments, announce
 - **Change Detection:** Uses content hashing to determine exactly what is new or modified.
 - **Reporting:** Generates a human-readable Markdown report (`_changes/latest.md`) summarizing what changed.
 - **On-Demand Syncing:** Built to be run exactly when you need to know "what's new", fetching the latest state directly from Canvas.
+- **Turnitin Lite (Optional):** Evaluate your documents for plagiarism and AI-generation offline using Apple Intelligence before submitting them.
 - **DeepSeek Integration (Optional):** Forward assignment details and prompts to DeepSeek for advanced AI reasoning, while Codex handles the API navigation.
 
 ## Prerequisites
@@ -58,6 +59,16 @@ my-canvas-data/
       modules/                 # Detailed module items
   index.json                   # Top-level index of synced courses
 ```
+
+### Turnitin Lite (Optional Apple Intelligence Detection)
+
+If you are using an Apple Silicon Mac running macOS 15.0 or later, Codex can use **Turnitin Lite** to evaluate your documents for plagiarism and AI-generation before you submit them to Canvas. 
+This tool runs 100% offline using native Apple Intelligence (FoundationModels).
+
+**Zero-Setup Turnitin Lite Usage:**
+1. Tell Codex: *"Kiểm tra file này giúp tôi trước khi nộp."*
+2. Codex will automatically verify your hardware compatibility.
+3. If you approve, Codex will download and execute the `turnitin-lite` engine locally, providing you with a detailed match report and AI probability score.
 
 ### DeepSeek Integration (Optional)
 
