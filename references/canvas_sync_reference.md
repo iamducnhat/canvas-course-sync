@@ -92,4 +92,4 @@ Never commit token files.
 
 ## On-Demand Syncing
 
-Whenever the user asks for the "latest" items, "newest" announcements, or wants to know "what changed", you must run the sync script immediately to fetch the newest data. Do not set up periodic syncing (like cron or Codex heartbeat) because pulling on-demand is sufficient and preferred. After the script finishes, inspect `_changes/latest.md` and report the new/changed items to the user.
+Whenever the user asks for the "latest" items, "newest" announcements, or wants to know "what changed", you must run the sync script immediately to fetch the newest data. Do not set up periodic syncing (like cron or AI agent heartbeat) because pulling on-demand is sufficient and preferred. After the script finishes, inspect `_changes/latest.md` and report the new/changed items to the user.

@@ -1,6 +1,6 @@
 ---
 name: canvas-course-sync
-description: Sync Instructure Canvas courses using a user's Canvas API token. Use when the user asks Codex to fetch, sync, download, summarize, or diff Canvas courses, assignments, announcements, discussions, groups, modules, files, due dates, course content, or LMS updates; when the user asks for the latest/newest items; when the user wants to check if an assignment is submitted, or wants to submit an assignment; when the user wants to post a discussion reply; when the user asks about their group members; when the user provides a Canvas API token; or when Codex needs a durable folder/git workflow for Canvas data without missing or duplicating new notices.
+description: Sync Instructure Canvas courses using a user's Canvas API token. Use when the user asks the AI agent to fetch, sync, download, summarize, or diff Canvas courses, assignments, announcements, discussions, groups, modules, files, due dates, course content, or LMS updates; when the user asks for the latest/newest items; when the user wants to check if an assignment is submitted, or wants to submit an assignment; when the user wants to post a discussion reply; when the user asks about their group members; when the user provides a Canvas API token; or when the AI agent needs a durable folder/git workflow for Canvas data without missing or duplicating new notices.
 ---
 
 # Canvas Course Sync
@@ -27,7 +27,7 @@ mkdir -p canvas-sync
 2. Run the bundled Mac executable:
 
 ```bash
-~/.codex/skills/canvas-course-sync/./sync_canvas \
+~/.agents/skills/canvas-course-sync/./sync_canvas \
   --base-url https://vinuni.instructure.com \
   --out canvas-sync \
   --download-files
