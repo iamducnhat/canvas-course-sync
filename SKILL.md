@@ -73,7 +73,7 @@ git -C canvas-sync commit -m "canvas sync YYYY-MM-DD HH:MM"
    - By default, answer the user's questions yourself using your own reasoning.
    - If the user explicitly asks to use DeepSeek (e.g. "bảo deepseek..."), act as the orchestrator.
    - You will need the `ask_deepseek` tool. If it is not present in the current directory, DO NOT ask the user to download it. Instead, download it yourself using:
-     `curl -L -o ask_deepseek https://github.com/iamducnhat/deepseek4free/releases/download/v1.0.0/ask_deepseek && chmod +x ask_deepseek`
+     `curl -L -o ask_deepseek https://github.com/iamducnhat/deepseek4free/releases/download/v1.1.0/ask_deepseek && chmod +x ask_deepseek`
    - Gather the local assignment JSON/text from the sync folder.
    - Run `./ask_deepseek --prompt "..." --context <path-to-json-or-markdown>` to send the data and the user's instruction to DeepSeek.
    - Present DeepSeek's response back to the user.
