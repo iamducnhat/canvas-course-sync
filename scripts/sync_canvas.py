@@ -99,6 +99,38 @@ class CanvasClient:
                 raise RuntimeError(f"Network error for {redact_url(url)}: {exc}") from exc
         raise RuntimeError(f"Failed request after retries: {redact_url(url)}")
 
+    def post(self, path: str, data: dict[str, Any] | None = None) -> Any:
+        url = self.url(path)
+        req = urllib.request.Request(url, method="POST")
+        req.add_header("Authorization", f"Bearer {self.token}")
+        req.add_header("Accept", "application/json")
+        if data is not None:
+            req.add_header("Content-Type", "application/x-www-form-urlencoded")
+            encoded_data = urllib.parse.urlencode(data, doseq=True).encode("utf-8")
+            req.data = encoded_data
+        
+        for attempt in range(4):
+            try:
+                with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                    raw = resp.read()
+                    text = raw.decode("utf-8") if raw else "null"
+                    return json.loads(text)
+            except urllib.error.HTTPError as exc:
+                if exc.code == 401:
+                    print(f"\nERROR_CANVAS_AUTH_FAILED: Canvas API token is invalid or expired. HTTP 401.", file=sys.stderr)
+                    sys.exit(1)
+                if exc.code in {429, 500, 502, 503, 504} and attempt < 3:
+                    time.sleep(2**attempt)
+                    continue
+                body = exc.read().decode("utf-8", errors="replace")[:500]
+                raise RuntimeError(f"Canvas API POST error {exc.code} for {redact_url(url)}: {body}") from exc
+            except urllib.error.URLError as exc:
+                if attempt < 3:
+                    time.sleep(2**attempt)
+                    continue
+                raise RuntimeError(f"Network error for {redact_url(url)}: {exc}") from exc
+        raise RuntimeError(f"Failed request after retries: {redact_url(url)}")
+
     def get(self, path: str, params: dict[str, Any] | None = None) -> Any:
         data, _ = self.request(self.url(path, params))
         time.sleep(self.polite_sleep)
@@ -243,6 +275,62 @@ def get_token(args: argparse.Namespace) -> str:
     raise SystemExit("Missing token. Use --token, --token-file, CANVAS_API_TOKEN, or store in hardware vault (--save-token).")
 
 
+def submit_assignment(client: CanvasClient, course_id: int, assignment_id: int, text: str | None, file_path: str | None) -> None:
+    if file_path:
+        path = Path(file_path).expanduser().resolve()
+        if not path.exists():
+            raise RuntimeError(f"File not found: {file_path}")
+        
+        size = path.stat().st_size
+        name = path.name
+        print(f"Initializing file upload for {name} ({size} bytes)...")
+        upload_init = client.post(
+            f"/api/v1/courses/{course_id}/assignments/{assignment_id}/submissions/self/files",
+            {"name": name, "size": size}
+        )
+        upload_url = upload_init.get("upload_url")
+        upload_params = upload_init.get("upload_params", {})
+        
+        if not upload_url:
+            raise RuntimeError("Failed to get upload_url from Canvas.")
+
+        print(f"Uploading file to {upload_url}...")
+        curl_args = ["curl", "-s", "-L"]
+        for k, v in upload_params.items():
+            curl_args.extend(["-F", f"{k}={v}"])
+        curl_args.extend(["-F", f"file=@{path}"])
+        curl_args.append(upload_url)
+        
+        res = subprocess.run(curl_args, capture_output=True, text=True, check=True)
+        try:
+            file_resp = json.loads(res.stdout)
+            file_id = file_resp.get("id")
+        except json.JSONDecodeError:
+            raise RuntimeError(f"Failed to parse Canvas file upload response: {res.stdout}")
+        
+        if not file_id:
+             raise RuntimeError(f"Canvas did not return a valid file ID. Response: {res.stdout}")
+
+        print(f"Submitting assignment {assignment_id} with file_id {file_id}...")
+        payload = {
+            "submission[submission_type]": "online_upload",
+            "submission[file_ids][]": [file_id]
+        }
+        resp = client.post(f"/api/v1/courses/{course_id}/assignments/{assignment_id}/submissions", payload)
+        print(f"Successfully submitted file {name} to assignment {assignment_id}. State: {resp.get('workflow_state')}")
+
+    elif text:
+        print(f"Submitting text to assignment {assignment_id}...")
+        payload = {
+            "submission[submission_type]": "online_text_entry",
+            "submission[body]": text
+        }
+        resp = client.post(f"/api/v1/courses/{course_id}/assignments/{assignment_id}/submissions", payload)
+        print(f"Successfully submitted text to assignment {assignment_id}. State: {resp.get('workflow_state')}")
+    else:
+        raise RuntimeError("Must provide either --submit-text or --submit-file")
+
+
 def fetch_course(client: CanvasClient, out: Path, state: dict[str, Any], changes: list[dict[str, Any]], course: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
     course_id = course["id"]
     course_dir = out / "courses" / str(course_id)
@@ -269,6 +357,15 @@ def fetch_course(client: CanvasClient, out: Path, state: dict[str, Any], changes
     write_json(course_dir / "announcements.json", announcements)
     for ann in announcements:
         record_change(state, changes, detail, "announcement", ann)
+
+    all_discussions = client.paged(
+        f"/api/v1/courses/{course_id}/discussion_topics",
+        {"include[]": ["sections", "sections_user_count"]},
+    )
+    discussions = [d for d in all_discussions if not d.get("is_announcement")]
+    write_json(course_dir / "discussions.json", discussions)
+    for d in discussions:
+        record_change(state, changes, detail, "discussion", d)
 
     modules = client.paged(f"/api/v1/courses/{course_id}/modules", {"include[]": ["items"]})
     write_json(course_dir / "modules.json", modules)
@@ -333,6 +430,7 @@ def fetch_course(client: CanvasClient, out: Path, state: dict[str, Any], changes
         "course_code": detail.get("course_code"),
         "assignments": len(assignments),
         "announcements": len(announcements),
+        "discussions": len(discussions),
         "modules": len(modules),
         "pages": len(pages),
         "quizzes": len(quizzes),
@@ -387,6 +485,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--save-token", help="Securely save the Canvas API token to local hardware vault and exit.")
     parser.add_argument("--no-commit", action="store_true", help="Do not git commit after sync.")
     parser.add_argument("--commit-message", help="Custom git commit message.")
+    parser.add_argument("--submit", nargs=2, metavar=("COURSE_ID", "ASSIGNMENT_ID"), type=int, help="Submit an assignment.")
+    parser.add_argument("--submit-text", help="Text to submit (requires --submit).")
+    parser.add_argument("--submit-file", help="File path to upload and submit (requires --submit).")
     return parser.parse_args()
 
 
@@ -399,6 +500,13 @@ def main() -> int:
         return 0
         
     token = get_token(args)
+    client = CanvasClient(args.base_url, token)
+
+    if args.submit:
+        course_id, assignment_id = args.submit
+        submit_assignment(client, course_id, assignment_id, args.submit_text, args.submit_file)
+        print("\nProceeding to sync to fetch the latest state...\n")
+
     out = Path(args.out).expanduser().resolve()
     out.mkdir(parents=True, exist_ok=True)
     ensure_git(out)
@@ -408,7 +516,6 @@ def main() -> int:
     state["last_started_at"] = now_utc()
     changes: list[dict[str, Any]] = []
 
-    client = CanvasClient(args.base_url, token)
     if args.course_id:
         courses = [client.get(f"/api/v1/courses/{cid}") for cid in args.course_id]
     else:

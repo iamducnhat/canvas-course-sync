@@ -1,6 +1,6 @@
 ---
 name: canvas-course-sync
-description: Sync Instructure Canvas courses using a user's Canvas API token. Use when the user asks Codex to fetch, sync, download, summarize, or diff Canvas courses, assignments, announcements, modules, files, due dates, course content, or LMS updates; when the user asks for the latest/newest items; when the user provides a Canvas API token; or when Codex needs a durable folder/git workflow for Canvas data without missing or duplicating new notices.
+description: Sync Instructure Canvas courses using a user's Canvas API token. Use when the user asks Codex to fetch, sync, download, summarize, or diff Canvas courses, assignments, announcements, discussions, modules, files, due dates, course content, or LMS updates; when the user asks for the latest/newest items; when the user wants to check if an assignment is submitted, or wants to submit an assignment; when the user provides a Canvas API token; or when Codex needs a durable folder/git workflow for Canvas data without missing or duplicating new notices.
 ---
 
 # Canvas Course Sync
@@ -50,9 +50,9 @@ Use `--course-id 2607 --course-id 3128` to sync only specific courses. Omit cour
    - Download course files only when useful; they can be large.
    - The script writes a normalized index and a Markdown change report.
 
-3. **Diff**
+3. **Diff & Inspect**
    - Inspect `git status`, `git diff --stat`, and `_changes/latest.md`.
-   - Report only meaningful user-facing changes: new announcements, changed due dates, new files, new assignments, locked/unlocked items.
+   - Report only meaningful user-facing changes: new announcements, new discussions, changed due dates, new files, new assignments, locked/unlocked items.
    - Avoid duplicate notifications by relying on `_state/snapshot_index.json`.
 
 4. **Commit**
@@ -65,8 +65,11 @@ git -C canvas-sync commit -m "canvas sync YYYY-MM-DD HH:MM"
 ```
 
 5. **Act**
+   - **Assignment State**: To check if an assignment is submitted, read the `submission` object inside the assignment's JSON file. It contains the current workflow state.
+   - **Linking**: When the user asks for "more detail" (nói chi tiết hơn) about an assignment, announcement, discussion, or any item, you MUST include a clickable Markdown link directly to its Canvas browser URL. You can find this URL in the `html_url` key inside the item's JSON.
    - For assignments, fetch attached files, read instructions, and produce requested deliverables.
-   - For announcements, answer the user's concrete question and link/quote only short necessary snippets.
+   - **Submitting**: To submit an assignment for the user, use the built-in submit flags. For text: `./sync_canvas --base-url <url> --out canvas-sync --submit <COURSE_ID> <ASSIGNMENT_ID> --submit-text "Your answer"`. For files: `./sync_canvas --base-url <url> --out canvas-sync --submit <COURSE_ID> <ASSIGNMENT_ID> --submit-file "path/to/file.pdf"`.
+   - For announcements and discussions, answer the user's concrete question and link/quote only short necessary snippets.
    - For exam schedules/due dates, produce a concise calendar-style summary.
 
 6. **DeepSeek Orchestration (Optional)**
