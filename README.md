@@ -66,7 +66,7 @@ If you are using an Apple Silicon Mac running macOS 15.0 or later, Codex can use
 This tool queries the **OpenAlex Database** for real academic plagiarism checks and uses native Apple Intelligence (FoundationModels) to estimate AI probability.
 
 **Zero-Setup Turnitin Lite Usage:**
-1. Tell Codex: *"Kiểm tra file này giúp tôi trước khi nộp."*
+1. Tell Codex: *"Check this file for me before submission."*
 2. Codex will automatically verify your hardware compatibility.
 3. If you approve, Codex will download and execute the `turnitin-lite` engine locally, providing you with a detailed match report and AI probability score.
 
@@ -75,6 +75,6 @@ This tool queries the **OpenAlex Database** for real academic plagiarism checks 
 If you prefer to use DeepSeek for reasoning (e.g., outlining assignments), this skill can route prompts to it. However, the DeepSeek logic is managed in a separate, dedicated repository to keep this tool focused on Canvas: **[iamducnhat/deepseek4free](https://github.com/iamducnhat/deepseek4free)**.
 
 **Zero-Setup DeepSeek Usage:**
-1. Just tell Codex: *"Bảo deepseek lên cái sườn cho bài tập X hộ tôi"*.
+1. Just tell Codex: *"Ask deepseek to outline assignment X for me"*.
 2. Provide your DeepSeek token (`userToken` from chat.deepseek.com) to Codex when asked.
 3. Codex will automatically download the `ask_deepseek` binary from the [iamducnhat/deepseek4free](https://github.com/iamducnhat/deepseek4free) repository in the background and execute the prompt for you!

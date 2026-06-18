@@ -66,7 +66,7 @@ git -C canvas-sync commit -m "canvas sync YYYY-MM-DD HH:MM"
 
 5. **Act**
    - **Assignment State**: To check if an assignment is submitted, read the `submission` object inside the assignment's JSON file. It contains the current workflow state.
-   - **Linking (CRITICAL RULE)**: When the user asks for "more detail" (nói chi tiết hơn) about an assignment, announcement, discussion, or any item, or whenever you perform an action that requires user attention, you MUST include a clickable Markdown link directly to its Canvas browser URL. You can find this URL in the `html_url` key inside the item's JSON. Do not omit this.
+   - **Linking (CRITICAL RULE)**: When the user asks for "more detail" about an assignment, announcement, discussion, or any item, or whenever you perform an action that requires user attention, you MUST include a clickable Markdown link directly to its Canvas browser URL. You can find this URL in the `html_url` key inside the item's JSON. Do not omit this.
    - For assignments, fetch attached files, read instructions, and produce requested deliverables.
    - **Submitting**: To submit an assignment for the user, use the built-in submit flags. For text: `./sync_canvas --base-url <url> --out canvas-sync --submit <COURSE_ID> <ASSIGNMENT_ID> --submit-text "Your answer"`. For files: `./sync_canvas --base-url <url> --out canvas-sync --submit <COURSE_ID> <ASSIGNMENT_ID> --submit-file "path/to/file.pdf"`.
    - **Discussion Replies**: To post a reply to a discussion, use `./sync_canvas --base-url <url> --out canvas-sync --reply-discussion <COURSE_ID> <TOPIC_ID> "Your message"`.
@@ -79,15 +79,15 @@ git -C canvas-sync commit -m "canvas sync YYYY-MM-DD HH:MM"
    - **CRITICAL RULE**: Do NOT download or use `turnitin-lite` unless you explicitly ask the user for approval first.
    - **Hardware Protocol**: Run `sysctl -n machdep.cpu.brand_string` and `sw_vers` to ensure the machine is an Apple Silicon Mac running macOS 15.0 or later.
    - **Interactive Prompt**: If hardware is supported, you MUST ask the user using the `ask_question` tool or a clear text prompt:
-     "Để kiểm tra đạo văn và AI, tôi có thể dùng Turnitin Lite (chạy offline trên máy Mac). Bạn có muốn tải và cài đặt nó không?"
+     "To check for plagiarism and AI, I can use Turnitin Lite (runs offline on your Mac). Would you like to download and install it?"
      Options:
-     - "Có" (Yes) -> Download, run `turnitin-lite <path_to_file>`, and report the JSON scores to the user.
-     - "Không" (No) -> Do not download. Instead, manually review the file yourself using your own reasoning or forward it to DeepSeek.
-     - "Không hỏi lại" (Don't ask again) -> Do not download, manually review it, and remember this preference for future checks in this session.
+     - "Yes" -> Download, run `turnitin-lite <path_to_file>`, and report the JSON scores to the user.
+     - "No" -> Do not download. Instead, manually review the file yourself using your own reasoning or forward it to DeepSeek.
+     - "Don't ask again" -> Do not download, manually review it, and remember this preference for future checks in this session.
 
 7. **DeepSeek Orchestration (Optional)**
    - By default, answer the user's questions yourself using your own reasoning.
-   - If the user explicitly asks to use DeepSeek (e.g. "bảo deepseek..."), act as the orchestrator.
+   - If the user explicitly asks to use DeepSeek (e.g. "ask deepseek..."), act as the orchestrator.
    - You will need the `ask_deepseek` tool. If it is not present in the current directory, DO NOT ask the user to download it. Instead, download it yourself using:
      `curl -L -o ask_deepseek https://github.com/iamducnhat/deepseek4free/releases/download/v1.2.0/ask_deepseek && chmod +x ask_deepseek`
    - Gather the local assignment JSON/text from the sync folder.
