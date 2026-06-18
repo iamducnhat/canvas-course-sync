@@ -11,7 +11,7 @@ Use this skill to turn a Canvas API token into a durable local course mirror. Pr
 
 - Treat API tokens as highly sensitive.
 - When the user provides a Canvas API token, store it securely using the pre-compiled binary's built-in command:
-  `bin/sync_canvas --save-token "THE_TOKEN"`
+  `./sync_canvas --save-token "THE_TOKEN"`
 - Never put the token in `.env`, command logs, generated Markdown, git commits, or JSON snapshots.
 - Commit after every successful fetch that changes local data. This makes missed/duplicate announcements auditable.
 - Do not assume Canvas supports realtime device events. Always perform an on-demand sync (run the sync script) whenever the user asks for the "latest", "newest", or wants to know "what's new". Do not set up periodic/cron syncing unless explicitly requested.
@@ -27,7 +27,7 @@ mkdir -p canvas-sync
 2. Run the bundled Mac executable:
 
 ```bash
-~/.codex/skills/canvas-course-sync/bin/sync_canvas \
+~/.codex/skills/canvas-course-sync/./sync_canvas \
   --base-url https://vinuni.instructure.com \
   --out canvas-sync \
   --download-files
@@ -45,7 +45,7 @@ Use `--course-id 2607 --course-id 3128` to sync only specific courses. Omit cour
    - If the user asks for the "latest" updates or "what's new", immediately run the sync command to fetch the newest state. There is no need to set up periodic or continuous syncing.
 
 2. **Sync**
-   - Use `bin/sync_canvas`.
+   - Use `./sync_canvas`.
    - Keep raw API JSON in `courses/<course-id>/`.
    - Download course files only when useful; they can be large.
    - The script writes a normalized index and a Markdown change report.
@@ -79,11 +79,11 @@ git -C canvas-sync commit -m "canvas sync YYYY-MM-DD HH:MM"
 
 ## Error Handling & Token Expiration
 
-If `bin/sync_canvas` outputs `ERROR_CANVAS_AUTH_FAILED`:
+If `./sync_canvas` outputs `ERROR_CANVAS_AUTH_FAILED`:
 - It means the Canvas token is expired or invalid.
 - Guide the user to create a new token: "Please go to Canvas -> Account -> Settings -> scroll down and click 'New Access Token'."
 - Calculate the exact date 120 days from today and tell the user to input that as the Expiration Date.
-- Ask the user to provide the new token, and then save it using `bin/sync_canvas --save-token "THE_TOKEN"`.
+- Ask the user to provide the new token, and then save it using `./sync_canvas --save-token "THE_TOKEN"`.
 
 If the external `ask_deepseek` tool outputs `ERROR_DEEPSEEK_AUTH_FAILED`:
 - Guide the user to get a new DeepSeek token: "Please go to chat.deepseek.com -> Open Developer Tools -> Application -> Local Storage -> Copy the `userToken`."
@@ -94,7 +94,7 @@ If the external `ask_deepseek` tool outputs `ERROR_DEEPSEEK_AUTH_FAILED`:
 The main executable is:
 
 ```bash
-~/.codex/skills/canvas-course-sync/bin/sync_canvas
+~/.codex/skills/canvas-course-sync/./sync_canvas
 ```
 
 Read `references/canvas_sync_reference.md` when you need endpoint details, folder layout, or automation guidance.

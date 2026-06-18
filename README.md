@@ -22,11 +22,12 @@ This tool uses your Canvas API token to fetch course data (assignments, announce
 
 ## Installation & Setup
 
-1. Clone or download this repository.
-2. Ensure you have Python 3.9+ installed.
-3. Export your Canvas API token, or save it to a secure file:
+1. **Download the latest binary** from the [Releases](https://github.com/iamducnhat/canvas-course-sync/releases) page.
+2. Unzip and place the `sync_canvas` binary in your desired folder.
+3. Open Terminal, make it executable if necessary (`chmod +x sync_canvas`), and run it.
+4. Save your Canvas API token securely to your hardware vault:
    ```bash
-   export CANVAS_API_TOKEN="your_token_here"
+   ./sync_canvas --save-token "your_token_here"
    ```
 
 ## Usage
@@ -39,7 +40,7 @@ Create a directory where you want to store your Canvas data and run the compiled
 
 ```bash
 mkdir -p my-canvas-data
-bin/sync_canvas \
+./sync_canvas \
   --base-url https://your-institution.instructure.com \
   --out my-canvas-data \
   --download-files
@@ -52,7 +53,7 @@ By default, the binary will sync all active enrolled courses.
 To sync only specific course IDs, use the `--course-id` argument multiple times:
 
 ```bash
-bin/sync_canvas \
+./sync_canvas \
   --base-url https://your-institution.instructure.com \
   --out my-canvas-data \
   --course-id 12345 \
@@ -61,7 +62,7 @@ bin/sync_canvas \
 
 ### Options
 
-Run `bin/sync_canvas --help` for a full list of options:
+Run `./sync_canvas --help` for a full list of options:
 
 - `--base-url`: **(Required)** Canvas base URL.
 - `--out`: **(Required)** Output sync directory.
