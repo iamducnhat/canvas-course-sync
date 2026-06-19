@@ -62,7 +62,7 @@ my-canvas-data/
 
 ### Turnitin Lite (Optional Plagiarism Detection)
 
-If you are using an Apple Silicon Mac running macOS 15.0 or later, the AI agent can use **Turnitin Lite** to evaluate your documents for plagiarism and AI-generation before you submit them to Canvas. 
+If you are using an Apple Silicon Mac running macOS 15.0 or later, the AI agent can use **Turnitin Lite** to evaluate your documents for plagiarism and AI-generation before you submit them to Canvas. The logic for this tool is managed in a separate repository: **[iamducnhat/turnitin-lite](https://github.com/iamducnhat/turnitin-lite)**.
 This tool queries the **OpenAlex Database** for real academic plagiarism checks and uses native Apple Intelligence (FoundationModels) to estimate AI probability.
 
 **Zero-Setup Turnitin Lite Usage:**
