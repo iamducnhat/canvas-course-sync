@@ -1,0 +1,20 @@
+{
+  "name": "canvas-course-sync",
+  "interface": {
+    "displayName": "Canvas Course Sync"
+  },
+  "plugins": [
+    {
+      "name": "canvas-course-sync",
+      "source": {
+        "source": "local",
+        "path": "./plugins/canvas-course-sync"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Education"
+    }
+  ]
+}
