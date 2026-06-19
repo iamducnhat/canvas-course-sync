@@ -1,0 +1,6 @@
+interface:
+  display_name: "Turnitin Lite for Canvas (macOS)"
+  short_description: "Check a file before Canvas submission"
+  default_prompt: "Use $canvas-turnitin-lite to check my file for plagiarism and AI before Canvas submission."
+policy:
+  allow_implicit_invocation: true
