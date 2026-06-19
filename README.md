@@ -68,7 +68,7 @@ This tool queries the **OpenAlex Database** for real academic plagiarism checks 
 **Zero-Setup Turnitin Lite Usage:**
 1. Tell your AI assistant: *"Check this file for me before submission."*
 2. The AI agent will automatically verify your hardware compatibility.
-3. If you approve, the AI agent will download and execute the `turnitin-lite` engine locally, providing you with a detailed match report and AI probability score.
+3. If you approve, the AI agent will download and execute the `turnitin-lite` engine locally (v2.0.0), providing you with a detailed match report, overall AI probability score, and granular sentence-level analysis (highlighting suspicious sentences as low, mid, or high).
 
 ### DeepSeek Integration (Optional)
 

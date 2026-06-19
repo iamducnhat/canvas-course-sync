@@ -81,7 +81,7 @@ git -C canvas-sync commit -m "canvas sync YYYY-MM-DD HH:MM"
    - **Interactive Prompt**: If hardware is supported, you MUST ask the user using the `ask_question` tool or a clear text prompt:
      "To check for plagiarism and AI, I can use Turnitin Lite (runs offline on your Mac). Would you like to download and install it?"
      Options:
-     - "Yes" -> Download, run `turnitin-lite <path_to_file>`, and report the JSON scores to the user.
+     - "Yes" -> Download it using `curl -L -o turnitin-lite https://github.com/iamducnhat/turnitin-lite/releases/download/v2.0.0/turnitin-lite && chmod +x turnitin-lite`. Then run `./turnitin-lite <path_to_file>`, and report the JSON scores and granular sentence-level matches (`suspectedSentences` with low, mid, high labels) to the user.
      - "No" -> Do not download. Instead, manually review the file yourself using your own reasoning or forward it to DeepSeek.
      - "Don't ask again" -> Do not download, manually review it, and remember this preference for future checks in this session.
 
