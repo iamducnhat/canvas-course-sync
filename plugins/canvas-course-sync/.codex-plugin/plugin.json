@@ -1,0 +1,46 @@
+{
+  "name": "canvas-course-sync",
+  "version": "1.1.0+codex.20260619201425",
+  "description": "Sync Instructure Canvas courses on macOS: assignments, announcements, due dates, files, modules, discussions, groups, and course changes for students.",
+  "author": {
+    "name": "Nguyen Duc Nhat",
+    "email": "iamducnhat@gmail.com",
+    "url": "https://github.com/iamducnhat"
+  },
+  "homepage": "https://github.com/iamducnhat/canvas-course-sync",
+  "repository": "https://github.com/iamducnhat/canvas-course-sync",
+  "keywords": [
+    "canvas",
+    "instructure",
+    "lms",
+    "education",
+    "course-sync",
+    "turnitin",
+    "monthly-updates",
+    "macos",
+    "student-tools"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Canvas Course Sync for Students (macOS)",
+    "shortDescription": "Sync Canvas assignments, due dates, announcements, and files on macOS.",
+    "longDescription": "Canvas Course Sync for Students (macOS) helps students sync Instructure Canvas course data into a local git-backed folder: assignments, due dates, announcements, discussions, modules, pages, files, groups, and course changes. It asks for the Canvas domain URL and API token/key before first use, saves the token securely, summarizes updates on demand or on the first day of each month, and can optionally run local Turnitin Lite checks before submission. This plugin is for macOS users only.",
+    "developerName": "Nguyen Duc Nhat",
+    "category": "Education",
+    "websiteURL": "https://github.com/iamducnhat/canvas-course-sync",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Local files",
+      "Automation"
+    ],
+    "defaultPrompt": [
+      "Sync my Canvas courses and summarize new updates.",
+      "Set up a first-day monthly Canvas update check.",
+      "Check this file with Turnitin Lite before submission."
+    ],
+    "brandColor": "#CF39E0",
+    "composerIcon": "assets/icon.png",
+    "logo": "assets/logo.png"
+  }
+}
